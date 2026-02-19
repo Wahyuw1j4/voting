@@ -10,23 +10,23 @@ body {
     font-family: Arial, sans-serif;
     background: #2f2f2f;
     margin: 0;
-    padding: 20px;
+    padding: 30px;
     color: white;
 }
 
+/* GRID 3 ATAS 2 BAWAH CENTER */
 .container {
+
     display: grid;
     grid-template-columns: repeat(3, 300px);
-    gap: 20px;
-    width: max-content;
-    margin: 0 auto;
+    gap: 25px;
+    justify-content: center;
+
 }
 
-.container::after {
-    content: "";
-}
-
+/* CARD */
 .card {
+
     background: #6e6e6e;
     width: 300px;
     height: 300px;
@@ -34,42 +34,68 @@ body {
     position: relative;
     cursor: pointer;
     user-select: none;
+
+    transition: transform 0.15s;
 }
 
+.card:hover {
+    transform: scale(1.03);
+}
+
+/* NAMA */
 .name {
+
     position: absolute;
     top: 20px;
     left: 20px;
-    font-size: 40px;
+    font-size: 36px;
     color: #e0e0e0;
+
 }
 
+/* ANGKA */
 .score {
+
     position: absolute;
     bottom: 20px;
-    right: 20px;
+    right: 30px;
     font-size: 180px;
     color: yellow;
     line-height: 1;
+
 }
 
+/* EDIT ICON */
 .edit {
+
     position: absolute;
     top: 20px;
     right: 20px;
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
+
 }
 
+/* RESET BUTTON */
 .reset {
+
     text-align: center;
-    margin-top: 20px;
+    margin-top: 30px;
+
 }
 
 button {
-    padding: 10px 20px;
+
+    padding: 12px 30px;
     font-size: 18px;
+    border-radius: 8px;
+    border: none;
     cursor: pointer;
+
+}
+
+button:hover {
+    opacity: 0.9;
 }
 
 </style>
@@ -87,27 +113,36 @@ button {
 
 const TOTAL = 5;
 
-let data = JSON.parse(localStorage.getItem("votingData")) || [];
+let data = JSON.parse(localStorage.getItem("votingData"));
 
-if (data.length === 0) {
+/* INIT DATA */
+if (!data || data.length !== TOTAL) {
 
-    for (let i = 0; i < TOTAL; i++) {
-        data.push({
-            name: "Nama " + (i+1),
-            score: 0
-        });
-    }
+    data = [
+
+        { name: "Nama 1", score: 0 },
+        { name: "Nama 2", score: 0 },
+        { name: "Nama 3", score: 0 },
+        { name: "Nama 4", score: 0 },
+        { name: "Nama 5", score: 0 }
+
+    ];
 
     save();
 }
 
+/* SAVE */
 function save() {
+
     localStorage.setItem("votingData", JSON.stringify(data));
+
 }
 
+/* RENDER */
 function render() {
 
     const container = document.getElementById("container");
+
     container.innerHTML = "";
 
     data.forEach((item, index) => {
@@ -115,23 +150,30 @@ function render() {
         const card = document.createElement("div");
         card.className = "card";
 
+        /* increment klik */
         card.onclick = () => increment(index);
 
+        /* nama */
         const name = document.createElement("div");
         name.className = "name";
         name.innerText = item.name;
 
+        /* score */
         const score = document.createElement("div");
         score.className = "score";
         score.innerText = item.score;
 
+        /* edit */
         const edit = document.createElement("div");
         edit.className = "edit";
         edit.innerText = "✎";
 
         edit.onclick = (e) => {
+
             e.stopPropagation();
+
             editName(index);
+
         };
 
         card.appendChild(name);
@@ -144,6 +186,7 @@ function render() {
 
 }
 
+/* INCREMENT */
 function increment(index) {
 
     data[index].score++;
@@ -154,13 +197,14 @@ function increment(index) {
 
 }
 
+/* EDIT NAMA */
 function editName(index) {
 
-    const newName = prompt("Masukkan nama baru:", data[index].name);
+    const newName = prompt("Masukkan nama:", data[index].name);
 
-    if (newName) {
+    if (newName && newName.trim() !== "") {
 
-        data[index].name = newName;
+        data[index].name = newName.trim();
 
         save();
 
@@ -170,6 +214,7 @@ function editName(index) {
 
 }
 
+/* RESET */
 function resetAll() {
 
     if (!confirm("Reset semua skor?")) return;
@@ -182,6 +227,7 @@ function resetAll() {
 
 }
 
+/* INIT */
 render();
 
 </script>
