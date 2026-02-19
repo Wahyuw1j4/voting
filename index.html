@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Voting Counter</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    background: #2f2f2f;
+    margin: 0;
+    padding: 20px;
+    color: white;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background: #6e6e6e;
+    width: 300px;
+    height: 300px;
+    border-radius: 25px;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.name {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 40px;
+    color: #e0e0e0;
+}
+
+.score {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 180px;
+    color: yellow;
+    line-height: 1;
+}
+
+.edit {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.reset {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container" id="container"></div>
+
+<div class="reset">
+<button onclick="resetAll()">Reset Semua</button>
+</div>
+
+<script>
+
+const TOTAL = 5;
+
+let data = JSON.parse(localStorage.getItem("votingData")) || [];
+
+if (data.length === 0) {
+
+    for (let i = 0; i < TOTAL; i++) {
+        data.push({
+            name: "Nama " + (i+1),
+            score: 0
+        });
+    }
+
+    save();
+}
+
+function save() {
+    localStorage.setItem("votingData", JSON.stringify(data));
+}
+
+function render() {
+
+    const container = document.getElementById("container");
+    container.innerHTML = "";
+
+    data.forEach((item, index) => {
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.onclick = () => increment(index);
+
+        const name = document.createElement("div");
+        name.className = "name";
+        name.innerText = item.name;
+
+        const score = document.createElement("div");
+        score.className = "score";
+        score.innerText = item.score;
+
+        const edit = document.createElement("div");
+        edit.className = "edit";
+        edit.innerText = "✎";
+
+        edit.onclick = (e) => {
+            e.stopPropagation();
+            editName(index);
+        };
+
+        card.appendChild(name);
+        card.appendChild(score);
+        card.appendChild(edit);
+
+        container.appendChild(card);
+
+    });
+
+}
+
+function increment(index) {
+
+    data[index].score++;
+
+    save();
+
+    render();
+
+}
+
+function editName(index) {
+
+    const newName = prompt("Masukkan nama baru:", data[index].name);
+
+    if (newName) {
+
+        data[index].name = newName;
+
+        save();
+
+        render();
+
+    }
+
+}
+
+function resetAll() {
+
+    if (!confirm("Reset semua skor?")) return;
+
+    data.forEach(item => item.score = 0);
+
+    save();
+
+    render();
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
